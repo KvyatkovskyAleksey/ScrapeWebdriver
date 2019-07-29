@@ -38,11 +38,13 @@ class ScrapyWebdriver(webdriver.Firefox):
 	def set_preference(self, pref, params):
 		'''Set preference in 'about:config' '''
 		if params in ['false', 'true']:
-			print('Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch).setBoolPref("'+pref+'", '+str(params)+');')
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch).setBoolPref("'+pref+'", '+str(params)+');')
+			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
+				.getService(Components.interfaces.nsIPrefBranch).setBoolPref("'+pref+'", '+str(params)+');')
 		elif type(params)==int:
-			print('Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch).setIntPref("'+pref+'", '+str(params)+');')
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch).setIntPref("'+pref+'", '+str(params)+');')
+			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
+				.getService(Components.interfaces.nsIPrefBranch).setIntPref("'+pref+'", '+str(params)+');')
 		elif type(params)==str:
-			print('Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch).setIntPref("'+pref+'", "'+params+'");')
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch).setCharPref("'+pref+'", "'+params+'");')
+			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
+				.getService(Components.interfaces.nsIPrefBranch).setCharPref("'+pref+'", "'+params+'");')
+
+	

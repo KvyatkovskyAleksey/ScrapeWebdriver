@@ -1,0 +1,21 @@
+import setuptools
+
+with open("README.md", "r") as fh:
+	long_description = fh.read()
+
+setuptools.setup(
+	name="scrapy_webdriver_by_kvyatkovsky",
+	version="0.3",
+	author="Aleksey Kvyatkovsky",
+	author_email="kvyatkovsky@mail.ru",
+	description="Class based on selenium webdriver.Firefox with methods\
+	 for scraping.",
+	long_description=long_description,
+	long_description_content_type="text/markdown",
+	url="https://github.com/KvyatkovskyAleksey/ScrapeWebdriver",
+	packages=setuptools.find_packages(),
+	classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT",
+        "Operating System :: OS Independent",
+    ],)
