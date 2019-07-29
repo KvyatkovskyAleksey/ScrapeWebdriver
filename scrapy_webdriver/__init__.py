@@ -1,0 +1,1 @@
+name = "scrapy_webdriver"

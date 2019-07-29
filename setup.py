@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
 	long_description = fh.read()
 
 setuptools.setup(
-	name="scrapy_webdriver_by_kvyatkovsky",
-	version="0.3",
+	name="scrapy_webdriver",
+	version="0.31",
 	author="Aleksey Kvyatkovsky",
 	author_email="kvyatkovsky@mail.ru",
 	description="Class based on selenium webdriver.Firefox with methods\
@@ -16,6 +16,6 @@ setuptools.setup(
 	packages=setuptools.find_packages(),
 	classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],)
