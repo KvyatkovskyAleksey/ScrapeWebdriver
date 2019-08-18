@@ -1,6 +1,7 @@
 *.log
 *.sublime-project
 *.sublime-workspace
+*.pyc
 
 # Distribution / packaging
 .Python
