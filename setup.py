@@ -20,7 +20,7 @@ setuptools.setup(
 		'pkg-resources==0.0.0',
 		'selenium==3.141.0',
 		'soupsieve==1.9.2',
-		'urllib3==1.25.3'
+		'urllib3==1.26.5'
     ],
 	classifiers=[
         "Programming Language :: Python :: 3",
