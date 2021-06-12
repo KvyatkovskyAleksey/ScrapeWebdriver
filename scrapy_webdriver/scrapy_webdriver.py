@@ -1,142 +1,104 @@
-from seleniumwire import webdriver as wire_webdriver
-from seleniumwire.webdriver.request import Request
+from itertools import cycle
+
+from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
-import requests
-
+from webdriver_manager.firefox import GeckoDriverManager
+from extension_creator import create_extension
 
 
 class ScrapyWebdriver(webdriver.Firefox):
-	'''Class with methods for scraping on selenium.webdriver(Firefox) base'''
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		    
-	def soup(self):
-		'''Get soup from page'''
-		return BeautifulSoup(self.page_source, 'lxml')
+    """Class with methods for scraping on selenium.webdriver(Firefox) base"""
 
-	def change_proxy(self, proxy):
-		'''Open config page and change proxy'''
-		proxy = proxy.split(':')
-		self.get('about:config')
-		if 'socks' in proxy[0].lower():
-			self.set_preference('network.proxy.socks_version', int(proxy[0][-1]))
-			self.set_preference('network.proxy.socks', proxy[1][2:])
-			self.set_preference('network.proxy.socks_port', int(proxy[2]))
-			self.set_preference('network.proxy.type', 1)
-		elif 'https' in proxy[0].lower():
-			self.set_preference('network.proxy.ssl', proxy[1][2:])
-			self.set_preference('network.proxy.ssl_port', int(proxy[2]))
-			self.set_preference('network.proxy.type', 1)
-		elif 'http' in proxy[0].lower():
-			self.set_preference('network.proxy.http', proxy[1][2:])
-			self.set_preference('network.proxy.ftp', proxy[1][2:])
-			self.set_preference('network.proxy.socks', proxy[1][2:])
-			self.set_preference('network.proxy.ssl', proxy[1][2:])
-			self.set_preference('network.proxy.http_port', int(proxy[2]))
-			self.set_preference('network.proxy.ftp_port', int(proxy[2]))
-			self.set_preference('network.proxy.socks_port', int(proxy[2]))
-			self.set_preference('network.proxy.ssl_port', int(proxy[2]))
-			self.set_preference('network.proxy.type', 1)
-			self.set_preference('network.proxy.share_proxy_settings', 'true')
+    def __init__(self,
+                 change_proxies_on_each_request=True,
+                 proxies=None,
+                 install_adblock=True,
+                 *args, **kwargs):
+        self.change_proxies_on_each_request = change_proxies_on_each_request
+        self.proxies = proxies
+        if self.proxies:
+            self.proxies = cycle(self.proxies)
+        kwargs['executable_path'] = GeckoDriverManager().install()
+        super().__init__(*args, **kwargs)
+        self.get('about:config')
+        # need for install extensions
+        self.set_preference('xpinstall.signatures.required', 'false')
+        if install_adblock:
+            self.install_addon(
+                '/home/aleksey/PycharmProjects/ScrapeWebdriver/scrapy_webdriver/extensions/adblocker_ultimate-3.7.10-an+fx.xpi')
 
-	def disable_cache(self):
-		'''Disable browser cache'''
-		self.get("about:config")
-		self.set_preference('browser.cache.disk.enable', 'false')
-		self.set_preference('browser.cache.memory.enable', 'false')
-		self.set_preference('browser.cache.offline.enable', 'false')
-		self.set_preference('network.http.use-cache', 'false')
+    def soup(self):
+        """Get soup from page"""
+        return BeautifulSoup(self.page_source, 'lxml')
 
+    def change_proxy(self, proxy):
+        """Open config page and change proxy"""
+        proxy = proxy.split(':')
+        proxy = [s.strip('/') for s in proxy]
+        proxy_username = None
+        proxy_password = None
+        proxy_type = proxy[0]
+        proxy_address = proxy[-2]
+        proxy_port = int(proxy[-1])
+        if len(proxy) > 3:
+            proxy_username = proxy[1]
+            proxy_password = proxy[2]
+        self.get('about:config')
+        if proxy_username and proxy_password:
+            create_extension(proxy_username, proxy_password)
+            driver.install_addon(
+                '/home/aleksey/PycharmProjects/ScrapeWebdriver/scrapy_webdriver/extensions/extension.xpi')
+        if 'socks' in proxy_type:
+            self.set_preference('network.proxy.socks_version', int(proxy_type[-1]))
+            self.set_preference('network.proxy.socks', proxy_address)
+            self.set_preference('network.proxy.socks_port', proxy_port)
+            self.set_preference('network.proxy.type', 1)
+        elif 'https' in proxy[0].lower():
+            self.set_preference('network.proxy.ssl', proxy_address)
+            self.set_preference('network.proxy.ssl_port', proxy_port)
+            self.set_preference('network.proxy.type', 1)
+        elif 'http' in proxy[0].lower():
+            self.set_preference('network.proxy.http', proxy_address)
+            self.set_preference('network.proxy.ftp', proxy_address)
+            self.set_preference('network.proxy.socks', proxy_address)
+            self.set_preference('network.proxy.ssl', proxy_address)
+            self.set_preference('network.proxy.http_port', proxy_port)
+            self.set_preference('network.proxy.ftp_port', proxy_port)
+            self.set_preference('network.proxy.socks_port', proxy_port)
+            self.set_preference('network.proxy.ssl_port', proxy_port)
+            self.set_preference('network.proxy.type', 1)
+            self.set_preference('network.proxy.share_proxy_settings', 'true')
 
-	def set_preference(self, pref, params):
-		'''Set preference in 'about:config' '''
-		if params in ['false', 'true']:
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
-				.getService(Components.interfaces.nsIPrefBranch).setBoolPref("'+pref+'", '+str(params)+');')
-		elif type(params)==int:
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
-				.getService(Components.interfaces.nsIPrefBranch).setIntPref("'+pref+'", '+str(params)+');')
-		elif type(params)==str:
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
-				.getService(Components.interfaces.nsIPrefBranch).setCharPref("'+pref+'", "'+params+'");')
+    def disable_cache(self):
+        """Disable browser cache"""
+        self.get("about:config")
+        self.set_preference('browser.cache.disk.enable', 'false')
+        self.set_preference('browser.cache.memory.enable', 'false')
+        self.set_preference('browser.cache.offline.enable', 'false')
+        self.set_preference('network.http.use-cache', 'false')
 
+    def set_preference(self, pref, params):
+        """Set preference in 'about:config' """
+        if params in ['false', 'true']:
+            self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
+                .getService(Components.interfaces.nsIPrefBranch).setBoolPref("' + pref + '", ' + str(params) + ');')
+        elif type(params) == int:
+            self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
+                .getService(Components.interfaces.nsIPrefBranch).setIntPref("' + pref + '", ' + str(params) + ');')
+        elif type(params) == str:
+            self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
+                .getService(Components.interfaces.nsIPrefBranch).setCharPref("' + pref + '", "' + params + '");')
 
-
-
-class ScrapyWebdriverWire(wire_webdriver.Firefox):
-	'''Class with methods for scraping on selenium_wire.webdriver(Firefox) base'''
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.r_session = requests.Session()
-		self.proxy = None
-		
-	def soup(self):
-		'''Get soup from page'''
-		return BeautifulSoup(self.page_source, 'lxml')
-
-
-	def change_proxy(self, proxy):
-		'''Change proxy(format: <protocol:ip:port>). Only http and https'''
-		self.proxy = proxy
-		proxies = {'http': self.proxy,
-			 	   'https': self.proxy}
-		proxy = (proxy.split('://')[0], None, None, proxy.split('://')[1])
-		self.r_session.proxies.update(proxies)
-		self._client._proxy.proxy_config = {
-			'http': proxy,
-			'https': proxy,
-			'no_proxy': []
-		}
-
-	def get(self, url):
-		super().get(url)
-		cookies_list = self.get_cookies()
-		for cookie in cookies_list:
-			self.r_session.cookies.set(cookie['name'], cookie['value'])
-
-
-
-	def set_preference(self, pref, params):
-		'''Set preference in 'about:config' '''
-		if params in ['false', 'true']:
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
-				.getService(Components.interfaces.nsIPrefBranch).setBoolPref("'+pref+'", '+str(params)+');')
-		elif type(params)==int:
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
-				.getService(Components.interfaces.nsIPrefBranch).setIntPref("'+pref+'", '+str(params)+');')
-		elif type(params)==str:
-			self.execute_script('Components.classes["@mozilla.org/preferences-service;1"]\
-				.getService(Components.interfaces.nsIPrefBranch).setCharPref("'+pref+'", "'+params+'");')
-
-	def repeat_request(self, request, headers=None, body=None):
-		'''Repeat request from ScrapyWebdriverWire.requests with requests library.
-		You can add params to request.'''
-		params = request.__dict__['_data']
-		if headers:
-			for k in headers:
-				params[headers][k] = headers[k]
-		if body:
-			request.body = body
-		if params['method'] == 'GET':
-			r = self.r_session.get(params['path'], headers=params['headers'], data=request.body)
-		elif params['method'] == 'POST':
-			r = self.r_session.post(params.path, headers=params.headers, data=params.body)
-		elif params['method'] == 'PUT':
-			r = self.r_session.put(params.path, headers=params.headers, data=params.body)
-		elif params['method'] == 'DELETE':
-			r = self.r_session.delete(params.path, headers=params.headers, data=params.body)
-		elif params['method'] == 'HEAD':
-			r = self.r_session.head(params.path, headers=params.headers, data=params.body)
-		elif params['method'] == 'OPTIONS':
-			r = self.r_session.options(params.path, headers=params.headers, data=params.body)
-		self.add_cookie(self.r_session.cookies.get_dict())
-		return r
+    def get(self, url):
+        """Loads a web page in the current browser session."""
+        if self.change_proxies_on_each_request and self.proxies and url != 'about:config':
+            proxy = self.proxies.__next__()
+            self.change_proxy(proxy)
+        self.execute(Command.GET, {'url': url})
 
 
-
-if __name__=='__main__':
-	wspider = ScrapyWebdriverWire(executable_path='utilites//geckodriver')
-	proxy = 'https://103.35.64.12:3128'
-	wspider.change_proxy(proxy)
-	wspider.get('https://yandex.ru')
+if __name__ == '__main__':
+    from proxies import proxies
+    driver = ScrapyWebdriver(proxies=proxies)
+    driver.get('https://yandex.ru')

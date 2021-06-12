@@ -20,3 +20,9 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+/proxies.py
+/scrapy_webdriver/extension/background.js
+/scrapy_webdriver/extensions/extension.xpi
+/venv/
+/.idea/
+/webshare.txt
