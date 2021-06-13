@@ -1,6 +1,8 @@
+import os
 from zipfile import ZipFile
 
 def create_extension(username, password):
+    path = os.path.dirname(os.path.realpath(__file__))
     with open('extension/background.js', 'w') as file:
         text = """
                 function callbackFn(details) {
@@ -19,9 +21,9 @@ def create_extension(username, password):
                 );
                """ % (username, password)
         file.write(text)
-    zip_file = ZipFile('extensions/extension.xpi', 'w')
-    zip_file.write('extension/background.js', arcname='background.js')
-    zip_file.write('extension/manifest.json', arcname='manifest.json')
+    zip_file = ZipFile(f'{path}/extensions/extension.xpi', 'w')
+    zip_file.write(f'{path}/extension/background.js', arcname='background.js')
+    zip_file.write(f'{path}/extension/manifest.json', arcname='manifest.json')
     zip_file.close()
 
 if __name__ == '__main__':

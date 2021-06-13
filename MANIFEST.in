@@ -1,1 +1,2 @@
 recursive-include scrapy_webdriver *.xpi
+recursive-include scrapy_webdriver/extension *.json *.js
