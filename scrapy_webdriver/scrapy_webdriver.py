@@ -38,7 +38,6 @@ class ScrapyWebdriver(webdriver.Firefox):
     def change_proxy(self, proxy):
         """Open config page and change proxy"""
         proxy = re.split(':|@', proxy)
-        proxy = [s.strip('/') for s in proxy]
         proxy_username = None
         proxy_password = None
         proxy_type = proxy[0]
