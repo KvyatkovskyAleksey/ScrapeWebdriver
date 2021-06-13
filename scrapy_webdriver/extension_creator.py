@@ -25,4 +25,4 @@ def create_extension(username, password):
     zip_file.close()
 
 if __name__ == '__main__':
-    create_extension('hbhoiqfd-1', 'uld8v8yp9d5m')
+    pass

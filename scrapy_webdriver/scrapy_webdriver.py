@@ -50,7 +50,7 @@ class ScrapyWebdriver(webdriver.Firefox):
         if proxy_username and proxy_password:
             create_extension(proxy_username, proxy_password)
             self.install_addon(
-                '/home/aleksey/PycharmProjects/ScrapeWebdriver/scrapy_webdriver/extensions/extension.xpi')
+                f'{self.path}/extensions/extension.xpi')
         if 'socks' in proxy_type:
             self.set_preference('network.proxy.socks_version', int(proxy_type[-1]))
             self.set_preference('network.proxy.socks', proxy_address)
