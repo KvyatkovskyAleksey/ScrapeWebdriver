@@ -4,7 +4,7 @@ from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from webdriver_manager.firefox import GeckoDriverManager
-from extension_creator import create_extension
+from .extension_creator import create_extension
 
 
 class ScrapyWebdriver(webdriver.Firefox):
@@ -47,7 +47,7 @@ class ScrapyWebdriver(webdriver.Firefox):
         self.get('about:config')
         if proxy_username and proxy_password:
             create_extension(proxy_username, proxy_password)
-            driver.install_addon(
+            self.install_addon(
                 '/home/aleksey/PycharmProjects/ScrapeWebdriver/scrapy_webdriver/extensions/extension.xpi')
         if 'socks' in proxy_type:
             self.set_preference('network.proxy.socks_version', int(proxy_type[-1]))
@@ -99,4 +99,6 @@ class ScrapyWebdriver(webdriver.Firefox):
 
 
 if __name__ == '__main__':
+    from proxies import proxies
+    driver = ScrapyWebdriver(proxies=proxies)
     pass

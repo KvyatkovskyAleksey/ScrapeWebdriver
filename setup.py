@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="scrapy_webdriver",
-	version="0.35",
+	version="0.37",
 	author="Aleksey Kvyatkovsky",
 	author_email="kvyatkovsky@mail.ru",
 	description="Class based on selenium webdriver.Firefox with methods  for scraping.",
