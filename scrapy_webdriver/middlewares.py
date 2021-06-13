@@ -12,9 +12,9 @@ class AsyncSeleniumMiddleware:
                  change_proxy_on_each_request: bool,
                  install_adblock: bool):
         self.driver_pool = DriverPool(drivers_number,
-                                      proxies,
-                                      change_proxy_on_each_request,
-                                      install_adblock)
+                                      proxies=proxies,
+                                      change_proxy_on_each_request=change_proxy_on_each_request,
+                                      install_adblock=install_adblock)
 
     @classmethod
     def from_crawler(cls, crawler: Crawler):
