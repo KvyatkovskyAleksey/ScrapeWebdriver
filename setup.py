@@ -16,7 +16,8 @@ setuptools.setup(
 	install_requires=[
 		'beautifulsoup4==4.9.3',
 		'selenium==3.141.0',
-		'webdriver-manager==3.4.2'
+		'webdriver-manager==3.4.2',
+		'Scrapy==2.5.0'
     ],
 	classifiers=[
         "Programming Language :: Python :: 3",
