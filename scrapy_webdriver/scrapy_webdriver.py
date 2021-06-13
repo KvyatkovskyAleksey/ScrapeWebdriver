@@ -1,4 +1,5 @@
 import os
+import re
 from itertools import cycle
 
 from selenium.webdriver.remote.command import Command
@@ -36,7 +37,7 @@ class ScrapyWebdriver(webdriver.Firefox):
 
     def change_proxy(self, proxy):
         """Open config page and change proxy"""
-        proxy = proxy.split(':')
+        proxy = re.split(':|@', proxy)
         proxy = [s.strip('/') for s in proxy]
         proxy_username = None
         proxy_password = None
