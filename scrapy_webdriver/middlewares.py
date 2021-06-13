@@ -1,8 +1,8 @@
 from scrapy.crawler import Crawler
 from scrapy import signals
 
-from middleware_utils.http import SeleniumRequest
-from middleware_utils.drivers import DriverPool
+from .middleware_utils.http import SeleniumRequest
+from .middleware_utils.drivers import DriverPool
 
 
 class AsyncSeleniumMiddleware:
