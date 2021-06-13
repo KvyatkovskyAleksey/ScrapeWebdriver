@@ -99,6 +99,4 @@ class ScrapyWebdriver(webdriver.Firefox):
 
 
 if __name__ == '__main__':
-    from proxies import proxies
-    driver = ScrapyWebdriver(proxies=proxies)
-    driver.get('https://yandex.ru')
+    pass
