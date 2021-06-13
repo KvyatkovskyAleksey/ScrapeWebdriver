@@ -1,3 +1,4 @@
+import os
 from itertools import cycle
 
 from selenium.webdriver.remote.command import Command
@@ -15,6 +16,7 @@ class ScrapyWebdriver(webdriver.Firefox):
                  proxies=None,
                  install_adblock=True,
                  *args, **kwargs):
+        self.path = os.path.dirname(os.path.realpath(__file__))
         self.change_proxies_on_each_request = change_proxies_on_each_request
         self.proxies = proxies
         if self.proxies:
@@ -26,7 +28,7 @@ class ScrapyWebdriver(webdriver.Firefox):
         self.set_preference('xpinstall.signatures.required', 'false')
         if install_adblock:
             self.install_addon(
-                '/home/aleksey/PycharmProjects/ScrapeWebdriver/scrapy_webdriver/extensions/adblocker_ultimate-3.7.10-an+fx.xpi')
+                f'{self.path}/extensions/adblocker_ultimate-3.7.10-an+fx.xpi')
 
     def soup(self):
         """Get soup from page"""
