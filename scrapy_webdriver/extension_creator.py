@@ -3,7 +3,7 @@ from zipfile import ZipFile
 
 def create_extension(username, password):
     path = os.path.dirname(os.path.realpath(__file__))
-    with open('extension/background.js', 'w') as file:
+    with open(f'{path}/extension/background.js', 'w') as file:
         text = """
                 function callbackFn(details) {
                     return {
