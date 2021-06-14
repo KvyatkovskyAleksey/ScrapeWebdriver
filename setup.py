@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="scrapy_webdriver",
-	version="0.53",
+	version="0.60",
 	author="Aleksey Kvyatkovsky",
 	author_email="kvyatkovsky@mail.ru",
 	description="Class based on selenium webdriver.Firefox with methods  for scraping.",
@@ -22,7 +22,6 @@ setuptools.setup(
     ],
 	package_data={'': ['license.txt']},
 	include_package_data=True,
-
 	classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

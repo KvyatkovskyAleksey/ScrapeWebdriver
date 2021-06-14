@@ -20,10 +20,12 @@ class Driver:
                  pool: 'DriverPool' = None,
                  change_proxy_on_each_request: bool = True,
                  proxies: tuple = (),
-                 install_adblock: bool = True):
+                 install_adblock: bool = True,
+                 anticaptcha_api_key: str = None):
         self.web_driver = ScrapyWebdriver(change_proxies_on_each_request=change_proxy_on_each_request,
                                           proxies=proxies,
-                                          install_adblock=install_adblock)
+                                          install_adblock=install_adblock,
+                                          anticaptcha_api_key=anticaptcha_api_key)
         self._blocked = False
         self.pool = pool
 
@@ -43,19 +45,22 @@ class DriverPool:
     def __init__(self, size=1,
                  change_proxy_on_each_request=True,
                  proxies=(),
-                 install_adblock=True):
+                 install_adblock=True,
+                 anticaptcha_api_key=None):
         self.size = size
         self.drivers = []
         self._waiting = []
         self.chang_proxy_on_each_request = change_proxy_on_each_request
         self.proxies = proxies
         self.install_adblock = install_adblock
+        self.anticaptcha_api_key = anticaptcha_api_key
 
     def append_driver(self):
         driver = Driver(pool=self,
                         change_proxy_on_each_request=self.chang_proxy_on_each_request,
                         proxies=self.proxies,
-                        install_adblock=self.install_adblock)
+                        install_adblock=self.install_adblock,
+                        anticaptcha_api_key=self.anticaptcha_api_key)
         self.drivers.append(driver)
         return driver
 
@@ -92,18 +97,23 @@ class DriverPool:
 
     @staticmethod
     def _get_url(driver: Driver, request: SeleniumRequest) -> HtmlResponse:
-        web_driver = driver.web_driver
-        if request.driver is None:
-            web_driver.get(request.url)
-        if request.driver_func is not None:
-            func_res = request.driver_func(web_driver,
-                                           *request.driver_func_args,
-                                           **request.driver_func_kwargs)
-            if func_res:
-                request.meta['driver_func_res'] = func_res
-        body = to_bytes(web_driver.page_source)  # body must be of type bytes
-        response = HtmlResponse(web_driver.current_url, body=body, encoding='utf-8', request=request)
-        response.meta['driver'] = driver
+        response = None
+        try:
+            web_driver = driver.web_driver
+            if request.driver is None:
+                web_driver.get(request.url)
+            if request.driver_func is not None:
+                func_res = request.driver_func(web_driver,
+                                               *request.driver_func_args,
+                                               **request.driver_func_kwargs)
+                if func_res:
+                    request.meta['driver_func_res'] = func_res
+            body = to_bytes(web_driver.page_source)  # body must be of type bytes
+            response = HtmlResponse(web_driver.current_url, body=body, encoding='utf-8', request=request)
+            response.meta['driver'] = driver
+        except Exception as e:
+            logger.error(f'Error was happened in webdriver: {e}')
+            driver.unblock()
         return response
 
     @staticmethod

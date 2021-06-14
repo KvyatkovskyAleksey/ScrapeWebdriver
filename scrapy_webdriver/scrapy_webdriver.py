@@ -7,7 +7,7 @@ from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from webdriver_manager.firefox import GeckoDriverManager
-from .extension_creator import create_extension
+from .extension_creator import create_extension, create_anticaptcha_extension
 
 
 class ChangeProxyMixin:
@@ -17,6 +17,7 @@ class ChangeProxyMixin:
                  change_proxies_on_each_request=True,
                  proxies=None,
                  install_adblock=True,
+                 anticaptcha_api_key=None,
                  *args, **kwargs):
         self.path = os.path.dirname(os.path.realpath(__file__))
         self.change_proxies_on_each_request = change_proxies_on_each_request
@@ -31,6 +32,10 @@ class ChangeProxyMixin:
         if install_adblock:
             self.install_addon(
                 f'{self.path}/extensions/adblocker_ultimate-3.7.10-an+fx.xpi')
+        if anticaptcha_api_key:
+            create_anticaptcha_extension(anticaptcha_api_key)
+            self.install_addon(
+                f'{self.path}/extensions/anticaptcha-plugin.xpi')
 
     def soup(self):
         """Get soup from page"""
@@ -111,5 +116,5 @@ class ScrapyWebdriver(ChangeProxyMixin, webdriver.Firefox):
 
 if __name__ == '__main__':
     from proxies import proxies
-    driver = ScrapyWebdriverWire(proxies=proxies)
+    driver = ScrapyWebdriver(proxies=proxies)
 

@@ -1,2 +1,3 @@
 recursive-include scrapy_webdriver *.xpi
+recursive-include scrapy_webdriver/anticaptcha_plugin *.json *.html *.wav *.manifest *.sig *.mf *.rsa *.sf *.png *.svg *.css
 recursive-include scrapy_webdriver/extension *.json *.js

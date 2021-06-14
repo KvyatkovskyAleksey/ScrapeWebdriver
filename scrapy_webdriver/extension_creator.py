@@ -1,5 +1,8 @@
 import os
+import re
 from zipfile import ZipFile
+import shutil
+
 
 def create_extension(username, password):
     path = os.path.dirname(os.path.realpath(__file__))
@@ -26,5 +29,17 @@ def create_extension(username, password):
     zip_file.write(f'{path}/extension/manifest.json', arcname='manifest.json')
     zip_file.close()
 
-if __name__ == '__main__':
-    pass
+
+def create_anticaptcha_extension(api_key):
+    path = os.path.dirname(os.path.realpath(__file__))
+    with ZipFile(f'{path}/anticaptcha_plugin/anticaptcha-plugin_v0.56.xpi', 'r') as zip_file:
+        zip_file.extractall(f'{path}/anticaptcha_plugin/anticaptcha-plugin')
+    with open(f'{path}/anticaptcha_plugin/anticaptcha-plugin/js/config_ac_api_key.js') as file:
+        js_text = ''.join(file.readlines())
+    js_text = re.sub("antiCapthaPredefinedApiKey = ''", f"antiCapthaPredefinedApiKey = '{api_key}'", js_text)
+    with open(f'{path}/anticaptcha_plugin/anticaptcha-plugin/js/config_ac_api_key.js', 'w') as file:
+        file.write(js_text)
+    shutil.make_archive(f'{path}/extensions/anticaptcha-plugin.xpi', 'zip',
+                        f'{path}/anticaptcha_plugin/anticaptcha-plugin')
+    os.rename(f'{path}/extensions/anticaptcha-plugin.xpi.zip',
+              f'{path}/extensions/anticaptcha-plugin.xpi')
