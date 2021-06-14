@@ -6,7 +6,7 @@ from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from webdriver_manager.firefox import GeckoDriverManager
-from .extension_creator import create_extension
+from extension_creator import create_extension
 
 
 class ScrapyWebdriver(webdriver.Firefox):
@@ -24,7 +24,7 @@ class ScrapyWebdriver(webdriver.Firefox):
             self.proxies = cycle(self.proxies)
         kwargs['executable_path'] = GeckoDriverManager().install()
         super().__init__(*args, **kwargs)
-        self.get('about:config')
+        self.execute(Command.GET, {'url': "about:config"})
         # need for install extensions
         self.set_preference('xpinstall.signatures.required', 'false')
         if install_adblock:
@@ -44,13 +44,9 @@ class ScrapyWebdriver(webdriver.Firefox):
         proxy_address = proxy[-2]
         proxy_port = int(proxy[-1])
         if len(proxy) > 3:
-            proxy_username = proxy[1]
+            proxy_username = proxy[1].strip('//')
             proxy_password = proxy[2]
-        self.get('about:config')
-        if proxy_username and proxy_password:
-            create_extension(proxy_username, proxy_password)
-            self.install_addon(
-                f'{self.path}/extensions/extension.xpi')
+        self.execute(Command.GET, {'url': "about:config"})
         if 'socks' in proxy_type:
             self.set_preference('network.proxy.socks_version', int(proxy_type[-1]))
             self.set_preference('network.proxy.socks', proxy_address)
@@ -71,10 +67,15 @@ class ScrapyWebdriver(webdriver.Firefox):
             self.set_preference('network.proxy.ssl_port', proxy_port)
             self.set_preference('network.proxy.type', 1)
             self.set_preference('network.proxy.share_proxy_settings', 'true')
+        if proxy_username and proxy_password:
+            create_extension(proxy_username, proxy_password)
+            self.install_addon(
+                f'{self.path}/extensions/extension.xpi')
+        print(proxy_username, proxy_password, proxy_address, proxy_port)
 
     def disable_cache(self):
         """Disable browser cache"""
-        self.get("about:config")
+        self.execute(Command.GET, {'url': "about:config"})
         self.set_preference('browser.cache.disk.enable', 'false')
         self.set_preference('browser.cache.memory.enable', 'false')
         self.set_preference('browser.cache.offline.enable', 'false')
@@ -103,4 +104,4 @@ class ScrapyWebdriver(webdriver.Firefox):
 if __name__ == '__main__':
     from proxies import proxies
     driver = ScrapyWebdriver(proxies=proxies)
-    pass
+
