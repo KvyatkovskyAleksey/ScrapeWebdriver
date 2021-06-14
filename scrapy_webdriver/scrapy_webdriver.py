@@ -2,6 +2,7 @@ import os
 import re
 from itertools import cycle
 
+import seleniumwire.webdriver
 from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -9,8 +10,8 @@ from webdriver_manager.firefox import GeckoDriverManager
 from .extension_creator import create_extension
 
 
-class ScrapyWebdriver(webdriver.Firefox):
-    """Class with methods for scraping on selenium.webdriver(Firefox) base"""
+class ChangeProxyMixin:
+    """Mixin with methods for scraping on selenium.webdriver(Firefox) base"""
 
     def __init__(self,
                  change_proxies_on_each_request=True,
@@ -71,7 +72,6 @@ class ScrapyWebdriver(webdriver.Firefox):
             create_extension(proxy_username, proxy_password)
             self.install_addon(
                 f'{self.path}/extensions/extension.xpi')
-        print(proxy_username, proxy_password, proxy_address, proxy_port)
 
     def disable_cache(self):
         """Disable browser cache"""
@@ -101,7 +101,15 @@ class ScrapyWebdriver(webdriver.Firefox):
         self.execute(Command.GET, {'url': url})
 
 
+class ScrapyWebdriver(ChangeProxyMixin, webdriver.Firefox):
+    pass
+
+
+class ScrapyWebdriverWire(ChangeProxyMixin, seleniumwire.webdriver.Firefox):
+    pass
+
+
 if __name__ == '__main__':
     from proxies import proxies
-    driver = ScrapyWebdriver(proxies=proxies)
+    driver = ScrapyWebdriverWire(proxies=proxies)
 
