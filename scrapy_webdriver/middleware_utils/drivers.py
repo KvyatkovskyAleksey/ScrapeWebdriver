@@ -96,9 +96,11 @@ class DriverPool:
         if request.driver is None:
             web_driver.get(request.url)
         if request.driver_func is not None:
-            request.driver_func(web_driver,
-                                *request.driver_func_args,
-                                **request.driver_func_kwargs)
+            func_res = request.driver_func(web_driver,
+                                           *request.driver_func_args,
+                                           **request.driver_func_kwargs)
+            if func_res:
+                request.meta['driver_func_res'] = func_res
         body = to_bytes(web_driver.page_source)  # body must be of type bytes
         response = HtmlResponse(web_driver.current_url, body=body, encoding='utf-8', request=request)
         response.meta['driver'] = driver
