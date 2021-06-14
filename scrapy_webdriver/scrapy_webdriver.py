@@ -2,7 +2,7 @@ import os
 import re
 from itertools import cycle
 
-import seleniumwire.webdriver
+# import seleniumwire.webdriver
 from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -105,8 +105,8 @@ class ScrapyWebdriver(ChangeProxyMixin, webdriver.Firefox):
     pass
 
 
-class ScrapyWebdriverWire(ChangeProxyMixin, seleniumwire.webdriver.Firefox):
-    pass
+# class ScrapyWebdriverWire(ChangeProxyMixin, seleniumwire.webdriver.Firefox):
+#     pass
 
 
 if __name__ == '__main__':

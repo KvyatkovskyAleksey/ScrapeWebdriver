@@ -2,4 +2,4 @@ beautifulsoup4
 selenium
 webdriver-manager
 Scrapy
-selenium_wire
+# selenium_wire
