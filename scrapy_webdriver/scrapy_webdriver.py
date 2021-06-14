@@ -6,7 +6,7 @@ from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from webdriver_manager.firefox import GeckoDriverManager
-from extension_creator import create_extension
+from .extension_creator import create_extension
 
 
 class ScrapyWebdriver(webdriver.Firefox):
