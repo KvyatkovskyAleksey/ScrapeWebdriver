@@ -66,7 +66,7 @@ class DriverPool:
 
     def close(self):
         for driver in self.drivers:
-            driver.web_driver.close()
+            driver.web_driver.quit()
 
     def update(self, driver):
         """ Listener callback for DriverItem"""
