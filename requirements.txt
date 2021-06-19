@@ -3,3 +3,4 @@ selenium
 webdriver-manager
 Scrapy
 # selenium_wire
+PyVirtualDisplay~=2.2

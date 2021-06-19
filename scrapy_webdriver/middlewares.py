@@ -4,6 +4,8 @@ from scrapy import signals
 from .middleware_utils.http import SeleniumRequest
 from .middleware_utils.drivers import DriverPool
 
+from pyvirtualdisplay import Display
+
 
 class AsyncSeleniumMiddleware:
     def __init__(self,
@@ -11,12 +13,17 @@ class AsyncSeleniumMiddleware:
                  proxies: tuple,
                  change_proxy_on_each_request: bool,
                  install_adblock: bool,
-                 anticaptcha_api_key: str):
+                 anticaptcha_api_key: str,
+                 run_pyvirtual_display: bool):
         self.driver_pool = DriverPool(drivers_number,
                                       proxies=proxies,
                                       change_proxy_on_each_request=change_proxy_on_each_request,
                                       install_adblock=install_adblock,
                                       anticaptcha_api_key=anticaptcha_api_key)
+        self.display = None
+        if run_pyvirtual_display:
+            self.display = Display(visible=0, size=(1680, 1050))
+            self.display.start()
 
     @classmethod
     def from_crawler(cls, crawler: Crawler):
@@ -25,7 +32,9 @@ class AsyncSeleniumMiddleware:
         change_proxy_on_each_request = crawler.settings.get("SELENIUM_CHANGE_PROXY_ON_EACH_REQUEST", True)
         install_adblock = crawler.settings.get("SELENIUM_INSTALL_ADBLOCK", True)
         anticaptcha_api_key = crawler.settings.get("SELENIUM_ANTICAPTCHA_API_KEY", None)
-        middleware = cls(drivers_number, proxies, change_proxy_on_each_request, install_adblock, anticaptcha_api_key)
+        run_pyvirtual_display = crawler.settings.get("SELENIUM_RUN_PYVIRTUAL_DISPLAY", False)
+        middleware = cls(drivers_number, proxies, change_proxy_on_each_request,
+                         install_adblock, anticaptcha_api_key, run_pyvirtual_display)
         crawler.signals.connect(middleware.spider_closed, signals.spider_closed)
         return middleware
 
@@ -39,3 +48,4 @@ class AsyncSeleniumMiddleware:
 
     def spider_closed(self, spider):
         self.driver_pool.close()
+        self.display.stop()
