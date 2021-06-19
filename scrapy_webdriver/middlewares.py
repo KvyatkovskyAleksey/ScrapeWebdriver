@@ -48,4 +48,5 @@ class AsyncSeleniumMiddleware:
 
     def spider_closed(self, spider):
         self.driver_pool.close()
-        self.display.stop()
+        if self.display:
+            self.display.stop()
