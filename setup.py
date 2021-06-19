@@ -18,6 +18,7 @@ setuptools.setup(
 		'selenium==3.141.0',
 		'webdriver-manager==3.4.2',
 		'Scrapy==2.5.0',
+		'PyVirtualDisplay~=2.2',
 		# 'selenium_wire==4.3.1'
     ],
 	package_data={'': ['license.txt']},
