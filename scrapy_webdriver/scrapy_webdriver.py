@@ -30,12 +30,11 @@ class ChangeProxyMixin:
         # need for install extensions
         self.set_preference('xpinstall.signatures.required', 'false')
         if install_adblock:
-            self.install_addon(
-                f'{self.path}/extensions/adblocker_ultimate-3.7.10-an+fx.xpi')
+            self.install_addon(f'{self.path}/extensions/adblocker_ultimate-3.7.10-an+fx.xpi')
         if anticaptcha_api_key:
             create_anticaptcha_extension(anticaptcha_api_key)
             self.install_addon(
-                f'{self.path}/extensions/anticaptcha-plugin.xpi')
+                f'{self.path}/extensions/anticaptcha-plugin.xpi', temporary=True)
 
     def soup(self):
         """Get soup from page"""
@@ -76,7 +75,7 @@ class ChangeProxyMixin:
         if proxy_username and proxy_password:
             create_extension(proxy_username, proxy_password)
             self.install_addon(
-                f'{self.path}/extensions/extension.xpi')
+                f'{self.path}/extensions/extension.xpi', temporary=True)
 
     def disable_cache(self):
         """Disable browser cache"""
