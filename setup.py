@@ -17,7 +17,7 @@ setuptools.setup(
 		'beautifulsoup4==4.9.3',
 		'selenium==3.141.0',
 		'webdriver-manager==3.4.2',
-		'Scrapy==2.5.0',
+		'Scrapy==2.6.0',
 		'PyVirtualDisplay~=2.2',
 		# 'selenium_wire==4.3.1'
     ],
