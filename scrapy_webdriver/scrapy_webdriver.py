@@ -24,6 +24,8 @@ class ChangeProxyMixin:
         self.proxies = proxies
         if self.proxies:
             self.proxies = cycle(self.proxies)
+            proxy = self.proxies.__next__()
+            self.change_proxy(proxy)
         kwargs['executable_path'] = GeckoDriverManager().install()
         super().__init__(*args, **kwargs)
         self.execute(Command.GET, {'url': "about:config"})
