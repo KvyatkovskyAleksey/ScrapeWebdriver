@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="scrapy_webdriver",
-	version="0.64",
+	version="0.68",
 	author="Aleksey Kvyatkovsky",
 	author_email="kvyatkovsky@mail.ru",
 	description="Class based on selenium webdriver.Firefox with methods  for scraping.",
@@ -14,12 +14,11 @@ setuptools.setup(
 	url="https://github.com/KvyatkovskyAleksey/ScrapeWebdriver",
 	packages=setuptools.find_packages(),
 	install_requires=[
-		'beautifulsoup4==4.9.3',
-		'selenium==3.141.0',
-		'webdriver-manager==3.4.2',
-		'Scrapy~=2.5.1',
-		'PyVirtualDisplay~=2.2',
-		# 'selenium_wire==4.3.1'
+		'beautifulsoup4',
+		'selenium',
+		'webdriver-manager',
+		'Scrapy',
+		'PyVirtualDisplay',
     ],
 	package_data={'': ['license.txt']},
 	include_package_data=True,

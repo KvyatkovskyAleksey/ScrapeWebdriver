@@ -2,7 +2,6 @@ import os
 import re
 from itertools import cycle
 
-# import seleniumwire.webdriver
 from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
