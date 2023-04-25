@@ -97,7 +97,6 @@ class DriverPool:
 
     @staticmethod
     def _get_url(driver: Driver, request: SeleniumRequest) -> HtmlResponse:
-        response = None
         try:
             web_driver = driver.web_driver
             if request.driver is None:
@@ -112,8 +111,9 @@ class DriverPool:
             response = HtmlResponse(web_driver.current_url, body=body, encoding='utf-8', request=request)
             response.meta['driver'] = driver
         except Exception as e:
-            logger.error(f'Error was happened in webdriver: {e}')
-            driver.unblock()
+            logger.exception(e)
+            response = HtmlResponse(request.url, body=str(e), encoding='utf-8', request=request, status=500)
+            response.meta['driver'] = driver
         return response
 
     @staticmethod
