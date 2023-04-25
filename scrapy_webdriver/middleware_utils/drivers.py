@@ -1,5 +1,7 @@
 import logging
 
+from webdriver_manager.firefox import GeckoDriverManager
+
 from ..scrapy_webdriver import ScrapyWebdriver
 
 from scrapy.utils.python import to_bytes
@@ -21,11 +23,15 @@ class Driver:
                  change_proxy_on_each_request: bool = True,
                  proxies: tuple = (),
                  install_adblock: bool = True,
-                 anticaptcha_api_key: str = None):
+                 anticaptcha_api_key: str = None,
+                 executable_path: str = None
+                 ):
         self.web_driver = ScrapyWebdriver(change_proxies_on_each_request=change_proxy_on_each_request,
                                           proxies=proxies,
                                           install_adblock=install_adblock,
-                                          anticaptcha_api_key=anticaptcha_api_key)
+                                          anticaptcha_api_key=anticaptcha_api_key,
+                                          executable_path=executable_path
+                                          )
         self._blocked = False
         self.pool = pool
 
@@ -54,13 +60,16 @@ class DriverPool:
         self.proxies = proxies
         self.install_adblock = install_adblock
         self.anticaptcha_api_key = anticaptcha_api_key
+        self.executable_path = GeckoDriverManager().install()
 
     def append_driver(self):
         driver = Driver(pool=self,
                         change_proxy_on_each_request=self.chang_proxy_on_each_request,
                         proxies=self.proxies,
                         install_adblock=self.install_adblock,
-                        anticaptcha_api_key=self.anticaptcha_api_key)
+                        anticaptcha_api_key=self.anticaptcha_api_key,
+                        executable_path=self.executable_path
+                        )
         self.drivers.append(driver)
         return driver
 
