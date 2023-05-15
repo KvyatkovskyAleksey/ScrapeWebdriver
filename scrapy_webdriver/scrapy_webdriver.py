@@ -35,6 +35,9 @@ class ChangeProxyMixin:
             create_anticaptcha_extension(anticaptcha_api_key)
             self.install_addon(
                 f'{self.path}/extensions/anticaptcha-plugin.xpi', temporary=True)
+        if self.proxies:
+            proxy = self.proxies.__next__()
+            self.change_proxy(proxy)
 
     def soup(self):
         """Get soup from page"""

@@ -7,6 +7,7 @@ from .middleware_utils.drivers import DriverPool
 from pyvirtualdisplay import Display
 
 
+
 class AsyncSeleniumMiddleware:
     def __init__(self,
                  drivers_number: int,
