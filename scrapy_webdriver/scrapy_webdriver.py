@@ -2,6 +2,7 @@ import os
 import re
 from itertools import cycle
 
+import selenium
 from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -24,8 +25,13 @@ class ChangeProxyMixin:
         self.proxies = proxies
         if self.proxies:
             self.proxies = cycle(self.proxies)
-        if 'executable_path' not in kwargs:
-            kwargs['executable_path'] = GeckoDriverManager().install()
+        if selenium.__version__.startswith('3'):
+            if 'executable_path' not in kwargs:
+                kwargs['executable_path'] = GeckoDriverManager().install()
+        elif selenium.__version__.startswith('4'):
+            if 'service' not in kwargs:
+                from selenium.webdriver.chrome.service import Service
+                kwargs['service'] = Service(GeckoDriverManager().install())
         super().__init__(*args, **kwargs)
         self.execute(Command.GET, {'url': "about:config"})
         # need for install extensions
