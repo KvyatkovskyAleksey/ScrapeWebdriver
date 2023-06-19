@@ -1,5 +1,5 @@
 beautifulsoup4
-selenium
+selenium>=3.0.0,<4.0.1
 webdriver-manager
 Scrapy
 PyVirtualDisplay
