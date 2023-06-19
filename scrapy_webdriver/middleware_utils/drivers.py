@@ -10,6 +10,7 @@ from scrapy.http import HtmlResponse
 from twisted.internet.threads import deferToThreadPool
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
+import selenium
 
 from .http import SeleniumRequest
 
@@ -26,12 +27,25 @@ class Driver:
                  anticaptcha_api_key: str = None,
                  executable_path: str = None
                  ):
-        self.web_driver = ScrapyWebdriver(change_proxies_on_each_request=change_proxy_on_each_request,
-                                          proxies=proxies,
-                                          install_adblock=install_adblock,
-                                          anticaptcha_api_key=anticaptcha_api_key,
-                                          executable_path=executable_path
-                                          )
+        # in selenium 4 and higher need to use Service
+        if selenium.__version__.startswith('3'):
+            self.web_driver = ScrapyWebdriver(change_proxies_on_each_request=change_proxy_on_each_request,
+                                              proxies=proxies,
+                                              install_adblock=install_adblock,
+                                              anticaptcha_api_key=anticaptcha_api_key,
+                                              executable_path=executable_path
+                                              )
+        elif selenium.__version__.startswith('4'):
+            from selenium.webdriver.chrome.service import Service
+            self.web_driver = ScrapyWebdriver(change_proxies_on_each_request=change_proxy_on_each_request,
+                                              proxies=proxies,
+                                              install_adblock=install_adblock,
+                                              anticaptcha_api_key=anticaptcha_api_key,
+                                              service=Service(executable_path)
+                                              )
+        else:
+            raise NotImplementedError("Please install selenium 3 or 4")
+
         self._blocked = False
         self.pool = pool
 
