@@ -6,7 +6,8 @@ from selenium.webdriver.remote.command import Command
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from webdriver_manager.firefox import GeckoDriverManager
-from .extension_creator import create_extension, create_anticaptcha_extension
+
+from .extension_creator import create_anticaptcha_extension
 
 
 class ChangeProxyMixin:
@@ -75,10 +76,6 @@ class ChangeProxyMixin:
             self.set_preference('network.proxy.ssl_port', proxy_port)
             self.set_preference('network.proxy.type', 1)
             self.set_preference('network.proxy.share_proxy_settings', 'true')
-        if proxy_username and proxy_password:
-            create_extension(proxy_username, proxy_password)
-            self.install_addon(
-                f'{self.path}/extensions/extension.xpi', temporary=True)
 
     def disable_cache(self):
         """Disable browser cache"""
@@ -112,11 +109,7 @@ class ScrapyWebdriver(ChangeProxyMixin, webdriver.Firefox):
     pass
 
 
-# class ScrapyWebdriverWire(ChangeProxyMixin, seleniumwire.webdriver.Firefox):
-#     pass
-
-
 if __name__ == '__main__':
     from proxies import proxies
-    driver = ScrapyWebdriver(proxies=proxies)
+    driver = ScrapyWebdriver()
 
