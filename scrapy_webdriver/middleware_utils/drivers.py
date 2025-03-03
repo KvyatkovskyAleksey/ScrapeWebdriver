@@ -18,20 +18,22 @@ logger = logging.getLogger(__name__)
 
 
 class Driver:
-    def __init__(self,
-                 pool: 'DriverPool' = None,
-                 change_proxy_on_each_request: bool = True,
-                 proxies: tuple = (),
-                 install_adblock: bool = True,
-                 anticaptcha_api_key: str = None,
-                 executable_path: str = None
-                 ):
-        self.web_driver = ScrapyWebdriver(change_proxies_on_each_request=change_proxy_on_each_request,
-                                          proxies=proxies,
-                                          install_adblock=install_adblock,
-                                          anticaptcha_api_key=anticaptcha_api_key,
-                                          executable_path=executable_path
-                                          )
+    def __init__(
+        self,
+        pool: "DriverPool" = None,
+        change_proxy_on_each_request: bool = True,
+        proxies: tuple = (),
+        install_adblock: bool = True,
+        anticaptcha_api_key: str = None,
+        executable_path: str = None,
+    ):
+        self.web_driver = ScrapyWebdriver(
+            change_proxies_on_each_request=change_proxy_on_each_request,
+            proxies=proxies,
+            install_adblock=install_adblock,
+            anticaptcha_api_key=anticaptcha_api_key,
+            executable_path=executable_path,
+        )
         self._blocked = False
         self.pool = pool
 
@@ -48,11 +50,14 @@ class Driver:
 
 
 class DriverPool:
-    def __init__(self, size=1,
-                 change_proxy_on_each_request=True,
-                 proxies=(),
-                 install_adblock=True,
-                 anticaptcha_api_key=None):
+    def __init__(
+        self,
+        size=1,
+        change_proxy_on_each_request=True,
+        proxies=(),
+        install_adblock=True,
+        anticaptcha_api_key=None,
+    ):
         self.size = size
         self.drivers = []
         self._waiting = []
@@ -63,13 +68,14 @@ class DriverPool:
         self.executable_path = GeckoDriverManager().install()
 
     def append_driver(self):
-        driver = Driver(pool=self,
-                        change_proxy_on_each_request=self.chang_proxy_on_each_request,
-                        proxies=self.proxies,
-                        install_adblock=self.install_adblock,
-                        anticaptcha_api_key=self.anticaptcha_api_key,
-                        executable_path=self.executable_path
-                        )
+        driver = Driver(
+            pool=self,
+            change_proxy_on_each_request=self.chang_proxy_on_each_request,
+            proxies=self.proxies,
+            install_adblock=self.install_adblock,
+            anticaptcha_api_key=self.anticaptcha_api_key,
+            executable_path=self.executable_path,
+        )
         self.drivers.append(driver)
         return driver
 
@@ -78,11 +84,11 @@ class DriverPool:
             driver.web_driver.quit()
 
     def update(self, driver):
-        """ Listener callback for DriverItem"""
+        """Listener callback for DriverItem"""
         if self._waiting:
             free_driver = self._waiting.pop()
             free_driver.callback(driver)
-            logger.info('Free deferred from waiting, len = %s', len(self._waiting))
+            logger.info("Free deferred from waiting, len = %s", len(self._waiting))
 
     def get_driver(self, keeped_driver=None):
         if keeped_driver is not None:
@@ -101,7 +107,7 @@ class DriverPool:
         else:
             logger.info("Free driver not found. Waiting for ....")
             self._waiting.append(free_driver)
-            logger.info('Append deferred tor waiting, len = %s', len(self._waiting))
+            logger.info("Append deferred tor waiting, len = %s", len(self._waiting))
         return free_driver
 
     @staticmethod
@@ -111,35 +117,43 @@ class DriverPool:
             if request.driver is None:
                 web_driver.get(request.url)
             if request.driver_func is not None:
-                func_res = request.driver_func(web_driver,
-                                               *request.driver_func_args,
-                                               **request.driver_func_kwargs)
+                func_res = request.driver_func(
+                    web_driver, *request.driver_func_args, **request.driver_func_kwargs
+                )
                 if func_res:
-                    request.meta['driver_func_res'] = func_res
+                    request.meta["driver_func_res"] = func_res
             body = to_bytes(web_driver.page_source)  # body must be of type bytes
-            response = HtmlResponse(web_driver.current_url, body=body, encoding='utf-8', request=request)
-            response.meta['driver'] = driver
+            response = HtmlResponse(
+                web_driver.current_url, body=body, encoding="utf-8", request=request
+            )
+            response.meta["driver"] = driver
         except Exception as e:
             logger.exception(e)
-            response = HtmlResponse(request.url, body=str(e), encoding='utf-8', request=request, status=500)
-            response.meta['driver'] = driver
+            response = HtmlResponse(
+                request.url, body=str(e), encoding="utf-8", request=request, status=500
+            )
+            response.meta["driver"] = driver
         return response
 
     @staticmethod
     def _response(driver: Driver, request: SeleniumRequest) -> Deferred:
         driver.block()
-        deferred = deferToThreadPool(reactor, reactor.getThreadPool(), DriverPool._get_url, driver, request)
+        deferred = deferToThreadPool(
+            reactor, reactor.getThreadPool(), DriverPool._get_url, driver, request
+        )
         return deferred
 
     @staticmethod
     def _unblock(response: HtmlResponse):
-        driver = response.meta['driver']
+        driver = response.meta["driver"]
         if not response.request.keep_driver:
             driver.unblock()
-            response.meta['driver'] = None
+            response.meta["driver"] = None
         return response
 
     def get_response(self, request: SeleniumRequest) -> Deferred:
         driver = self.get_driver(request.driver)
-        response = driver.addCallback(self._response, request).addCallback(self._unblock)
+        response = driver.addCallback(self._response, request).addCallback(
+            self._unblock
+        )
         return response

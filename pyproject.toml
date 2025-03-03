@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "scrapewebdriver"
-version = "0.74"
+version = "1.0"
 description = "Scrapy extension for handle pages with selenium"
 authors = ["aleksey <kvyatkovsky89@gmail.com>"]
 license = "MIT"
@@ -17,6 +17,11 @@ pyvirtualdisplay = "^3.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.5"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+mypy = "^1.15.0"
 
 [build-system]
 requires = ["poetry-core"]

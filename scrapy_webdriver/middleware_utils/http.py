@@ -3,12 +3,16 @@ from scrapy import Request
 
 class SeleniumRequest(Request):
 
-    def __init__(self,
-                 driver_func: callable = None,
-                 driver_func_args: tuple = (),
-                 driver_func_kwargs: dict = {},
-                 driver=None,
-                 keep_driver=False, *args, **kwargs):
+    def __init__(
+        self,
+        driver_func: callable = None,
+        driver_func_args: tuple = (),
+        driver_func_kwargs: dict = dict,
+        driver=None,
+        keep_driver=False,
+        *args,
+        **kwargs
+    ):
         """
         SeleniumRequest constructor
 
@@ -32,7 +36,6 @@ class SeleniumRequest(Request):
         self.driver = driver
         self.keep_driver = keep_driver
         if driver is not None:
-            kwargs['url'] = driver.web_driver.current_url
-            kwargs['dont_filter'] = True
+            kwargs["url"] = driver.web_driver.current_url
+            kwargs["dont_filter"] = True
         super().__init__(*args, **kwargs)
-
