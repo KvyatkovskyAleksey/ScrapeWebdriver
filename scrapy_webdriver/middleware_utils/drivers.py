@@ -1,18 +1,14 @@
 import logging
+from typing import cast
 
-from webdriver_manager.firefox import GeckoDriverManager
-
-from ..scrapy_webdriver import ScrapyWebdriver
-
-from scrapy.utils.python import to_bytes
 from scrapy.http import HtmlResponse
-
-from twisted.internet.threads import deferToThreadPool
+from scrapy.utils.python import to_bytes
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
+from twisted.internet.threads import deferToThreadPool
 
 from .http import SeleniumRequest
-
+from ..scrapy_webdriver import ScrapyWebdriver
 
 logger = logging.getLogger(__name__)
 
@@ -25,14 +21,12 @@ class Driver:
         proxies: tuple = (),
         install_adblock: bool = True,
         anticaptcha_api_key: str = None,
-        executable_path: str = None,
     ):
         self.web_driver = ScrapyWebdriver(
             change_proxies_on_each_request=change_proxy_on_each_request,
             proxies=proxies,
             install_adblock=install_adblock,
             anticaptcha_api_key=anticaptcha_api_key,
-            executable_path=executable_path,
         )
         self._blocked = False
         self.pool = pool
@@ -65,7 +59,6 @@ class DriverPool:
         self.proxies = proxies
         self.install_adblock = install_adblock
         self.anticaptcha_api_key = anticaptcha_api_key
-        self.executable_path = GeckoDriverManager().install()
 
     def append_driver(self):
         driver = Driver(
@@ -74,7 +67,6 @@ class DriverPool:
             proxies=self.proxies,
             install_adblock=self.install_adblock,
             anticaptcha_api_key=self.anticaptcha_api_key,
-            executable_path=self.executable_path,
         )
         self.drivers.append(driver)
         return driver
@@ -90,10 +82,10 @@ class DriverPool:
             free_driver.callback(driver)
             logger.info("Free deferred from waiting, len = %s", len(self._waiting))
 
-    def get_driver(self, keeped_driver=None):
-        if keeped_driver is not None:
+    def get_driver(self, kept_driver=None):
+        if kept_driver is not None:
             free_driver = Deferred()
-            free_driver.callback(keeped_driver)
+            free_driver.callback(kept_driver)
             return free_driver
         free_driver = Deferred()
         free_drivers = [driver for driver in self.drivers if not driver.blocked]
@@ -146,7 +138,11 @@ class DriverPool:
     @staticmethod
     def _unblock(response: HtmlResponse):
         driver = response.meta["driver"]
-        if not response.request.keep_driver:
+        request: SeleniumRequest = cast(
+            SeleniumRequest,
+            response.request,
+        )
+        if not request.keep_driver:
             driver.unblock()
             response.meta["driver"] = None
         return response

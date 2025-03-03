@@ -1,10 +1,9 @@
-from scrapy.crawler import Crawler
-from scrapy import signals
-
-from .middleware_utils.http import SeleniumRequest
-from .middleware_utils.drivers import DriverPool
-
 from pyvirtualdisplay import Display
+from scrapy import signals
+from scrapy.crawler import Crawler
+
+from .middleware_utils.drivers import DriverPool
+from .middleware_utils.http import SeleniumRequest
 
 
 class AsyncSeleniumMiddleware:

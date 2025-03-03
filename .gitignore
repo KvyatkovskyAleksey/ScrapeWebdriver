@@ -27,3 +27,6 @@ var/
 /.idea/
 /webshare.txt
 /.venv/
+
+# tests
+/tests/items.json

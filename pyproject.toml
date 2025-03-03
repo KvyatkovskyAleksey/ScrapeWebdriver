@@ -17,6 +17,7 @@ pyvirtualdisplay = "^3.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.5"
+pytest-twisted = "^1.14.3"
 
 
 [tool.poetry.group.dev.dependencies]
