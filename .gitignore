@@ -30,3 +30,4 @@ var/
 
 # tests
 /tests/items.json
+/tests/proxies.txt
