@@ -2,10 +2,10 @@ import os
 import re
 from itertools import cycle
 
-from selenium.webdriver.remote.command import Command
-from selenium import webdriver
 from bs4 import BeautifulSoup
-from webdriver_manager.firefox import GeckoDriverManager
+from selenium import webdriver
+from selenium.webdriver.remote.command import Command
+
 from .extension_creator import create_extension, create_anticaptcha_extension
 
 
@@ -48,17 +48,17 @@ class ChangeProxyMixin:
         """Get soup from page"""
         return BeautifulSoup(self.page_source, "lxml")
 
-    def change_proxy(self, proxy):
+    def change_proxy(self, proxy: str):
         """Open config page and change proxy"""
-        proxy = re.split(":|@", proxy)
+        proxy_data = re.split(":|@", proxy)
         proxy_username = None
         proxy_password = None
-        proxy_type = proxy[0]
-        proxy_address = proxy[-2]
-        proxy_port = int(proxy[-1])
-        if len(proxy) > 3:
-            proxy_username = proxy[1].strip("//")
-            proxy_password = proxy[2]
+        proxy_type = proxy_data[0]
+        proxy_address = proxy_data[-2]
+        proxy_port = int(proxy_data[-1])
+        if len(proxy_data) > 3:
+            proxy_username = proxy_data[1].strip("//")
+            proxy_password = proxy_data[2]
         self.execute(Command.GET, {"url": "about:config"})
         if "socks" in proxy_type:
             self.set_preference("network.proxy.socks_version", int(proxy_type[-1]))

@@ -36,6 +36,7 @@ class AsyncSeleniumMiddleware:
             "SELENIUM_CHANGE_PROXY_ON_EACH_REQUEST", True
         )
         install_adblock = crawler.settings.get("SELENIUM_INSTALL_ADBLOCK", True)
+        # fixme need to remove anticaptcha logic
         anticaptcha_api_key = crawler.settings.get("SELENIUM_ANTICAPTCHA_API_KEY", None)
         run_pyvirtual_display = crawler.settings.get(
             "SELENIUM_RUN_PYVIRTUAL_DISPLAY", False
