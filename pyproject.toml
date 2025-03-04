@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "scrapewebdriver"
+name = "scrapy_webdriver"
 version = "1.0"
 description = "Scrapy extension for handle pages with selenium"
 authors = ["aleksey <kvyatkovsky89@gmail.com>"]

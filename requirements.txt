@@ -1,5 +1,0 @@
-beautifulsoup4
-selenium
-webdriver-manager
-Scrapy
-PyVirtualDisplay
