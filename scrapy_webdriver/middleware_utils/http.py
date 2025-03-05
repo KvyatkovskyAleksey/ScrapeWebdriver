@@ -7,7 +7,7 @@ class SeleniumRequest(Request):
         self,
         driver_func: callable = None,
         driver_func_args: tuple = (),
-        driver_func_kwargs: dict = dict,
+        driver_func_kwargs: dict = None,
         driver=None,
         keep_driver=False,
         *args,
@@ -29,6 +29,8 @@ class SeleniumRequest(Request):
             *args:
             **kwargs:
         """
+        if driver_func_kwargs is None:
+            driver_func_kwargs = {}
         self.is_selenium = True
         self.driver_func = driver_func
         self.driver_func_args = driver_func_args
