@@ -65,11 +65,11 @@ class ChangeProxyMixin:
             self.set_preference("network.proxy.socks", proxy_address)
             self.set_preference("network.proxy.socks_port", proxy_port)
             self.set_preference("network.proxy.type", 1)
-        elif "https" in proxy[0].lower():
+        elif proxy_type.lower() == "https":
             self.set_preference("network.proxy.ssl", proxy_address)
             self.set_preference("network.proxy.ssl_port", proxy_port)
             self.set_preference("network.proxy.type", 1)
-        elif "http" in proxy[0].lower():
+        elif proxy_type.lower() == "http":
             self.set_preference("network.proxy.http", proxy_address)
             self.set_preference("network.proxy.ftp", proxy_address)
             self.set_preference("network.proxy.socks", proxy_address)

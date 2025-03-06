@@ -5,3 +5,6 @@ v1.0
 
 v1.0.1
 - fix default kwargs on SeleniumRequest
+
+v1.0.2
+- fix http / https proxies logic
