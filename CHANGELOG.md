@@ -8,3 +8,6 @@ v1.0.1
 
 v1.0.2
 - fix http / https proxies logic
+
+v1.0.3
+- fix parsing of proxies without credentials

@@ -55,6 +55,8 @@ class ChangeProxyMixin:
         proxy_password = None
         proxy_type = proxy_data[0]
         proxy_address = proxy_data[-2]
+        if proxy_address.startswith("//"):
+            proxy_address = proxy_address[2:]
         proxy_port = int(proxy_data[-1])
         if len(proxy_data) > 3:
             proxy_username = proxy_data[1].strip("//")
