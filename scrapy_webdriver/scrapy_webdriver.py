@@ -93,6 +93,7 @@ class ChangeProxyMixin:
         self.set_preference("browser.cache.memory.enable", "false")
         self.set_preference("browser.cache.offline.enable", "false")
         self.set_preference("network.http.use-cache", "false")
+        self.set_preference("places.history.enabled", "false")
 
     def set_preference(self, pref, params):
         """Set preference in 'about:config'"""

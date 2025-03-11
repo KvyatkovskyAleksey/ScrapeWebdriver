@@ -22,12 +22,14 @@ class Driver:
         install_adblock: bool = True,
         anticaptcha_api_key: str = None,
     ):
-        self.web_driver = ScrapyWebdriver(
-            change_proxies_on_each_request=change_proxy_on_each_request,
-            proxies=proxies,
-            install_adblock=install_adblock,
-            anticaptcha_api_key=anticaptcha_api_key,
-        )
+        self.settings = {
+            "change_proxies_on_each_request": change_proxy_on_each_request,
+            "proxies": proxies,
+            "install_adblock": install_adblock,
+            "anticaptcha_api_key": anticaptcha_api_key,
+        }
+        self.web_driver = ScrapyWebdriver(**self.settings)
+        self.urls_count = 0
         self._blocked = False
         self.pool = pool
 
@@ -37,10 +39,17 @@ class Driver:
 
     def block(self):
         self._blocked = True
+        self.urls_count += 1
 
     def unblock(self):
         self._blocked = False
+        if self.urls_count > 50:
+            self.reload_driver()
         self.pool.update(self)
+
+    def reload_driver(self):
+        self.web_driver.quit()
+        self.web_driver = ScrapyWebdriver(**self.settings)
 
 
 class DriverPool:
