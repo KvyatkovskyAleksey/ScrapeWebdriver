@@ -18,3 +18,6 @@ v1.0.4
 v1.0.5
 - disable "places.history.enabled" for prevent memory issues
 - added logic for reload driver instance after 50 urls for prevent memory issues
+
+v1.0.6
+- update logic for driver reloading

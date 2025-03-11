@@ -50,6 +50,7 @@ class Driver:
     def reload_driver(self):
         self.web_driver.quit()
         self.web_driver = ScrapyWebdriver(**self.settings)
+        self.urls_count = 0
 
 
 class DriverPool:
