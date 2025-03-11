@@ -42,9 +42,9 @@ class Driver:
         self.urls_count += 1
 
     def unblock(self):
-        self._blocked = False
         if self.urls_count > 50:
             self.reload_driver()
+        self._blocked = False
         self.pool.update(self)
 
     def reload_driver(self):
