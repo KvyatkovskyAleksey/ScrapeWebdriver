@@ -149,7 +149,23 @@ class DriverPool:
 
     def get_response(self, request: SeleniumRequest) -> Deferred:
         driver = self.get_driver(request.driver)
-        response = driver.addCallback(self._response, request).addCallback(
-            self._unblock
+        response = (
+            driver.addCallback(self._response, request)
+            .addCallback(self._unblock)
+            .addErrback(self._handle_response_error, request=request)
         )
         return response
+
+    def _handle_response_error(self, failure, request: SeleniumRequest):
+        driver = request.meta.get("driver")
+        if driver:
+            driver.unblock()
+            driver.web_driver.quit()
+            self.drivers.remove(driver)
+        return HtmlResponse(
+            request.url,
+            body=str(failure.getErrorMessage()).encode("utf-8"),
+            encoding="utf-8",
+            request=request,
+            status=500,
+        )

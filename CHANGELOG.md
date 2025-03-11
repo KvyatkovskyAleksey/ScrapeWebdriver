@@ -11,3 +11,6 @@ v1.0.2
 
 v1.0.3
 - fix parsing of proxies without credentials
+
+v1.0.4
+- updated error handling on driver errors
