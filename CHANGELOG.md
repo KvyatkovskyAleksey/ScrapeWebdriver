@@ -27,3 +27,6 @@ v1.0.7
 
 v1.0.8
 - added ability to run in headless mode
+
+v1.0.9
+- fix typing error
