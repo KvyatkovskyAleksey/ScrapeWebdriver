@@ -24,3 +24,6 @@ v1.0.6
 
 v1.0.7
 - update logic for driver reloading
+
+v1.0.8
+- added ability to run in headless mode

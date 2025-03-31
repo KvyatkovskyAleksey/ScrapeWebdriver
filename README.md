@@ -46,3 +46,4 @@ class TestSpider(scrapy.Spider):
  - `SELENIUM_CHANGE_PROXY_ON_EACH_REQUEST` - change or not proxy before each request, default `True`.
  - `SELENIUM_INSTALL_ADBLOCK` - install adblock extension for block some requests, default `True`.
  - `SELENIUM_RUN_PYVIRTUAL_DISPLAY` - run py virtual display for not run drivers in headless on server, default `False`. 
+ - `SELENIUM_HEADLESS` - run headless or not.

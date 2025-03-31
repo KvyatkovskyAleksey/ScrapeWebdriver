@@ -15,6 +15,7 @@ class AsyncSeleniumMiddleware:
         install_adblock: bool,
         anticaptcha_api_key: str,
         run_pyvirtual_display: bool,
+        headless: bool,
     ):
         self.driver_pool = DriverPool(
             drivers_number,
@@ -22,6 +23,7 @@ class AsyncSeleniumMiddleware:
             change_proxy_on_each_request=change_proxy_on_each_request,
             install_adblock=install_adblock,
             anticaptcha_api_key=anticaptcha_api_key,
+            headless=headless,
         )
         self.display = None
         if run_pyvirtual_display:
@@ -41,6 +43,7 @@ class AsyncSeleniumMiddleware:
         run_pyvirtual_display = crawler.settings.get(
             "SELENIUM_RUN_PYVIRTUAL_DISPLAY", False
         )
+        headless = crawler.settings.getbool("SELENIUM_HEADLESS", False)
         middleware = cls(
             drivers_number,
             proxies,
@@ -48,6 +51,7 @@ class AsyncSeleniumMiddleware:
             install_adblock,
             anticaptcha_api_key,
             run_pyvirtual_display,
+            headless,
         )
         crawler.signals.connect(middleware.spider_closed, signals.spider_closed)
         return middleware

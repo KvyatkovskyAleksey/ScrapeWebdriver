@@ -9,6 +9,7 @@ from twisted.internet.threads import deferToThreadPool
 
 from .http import SeleniumRequest
 from ..scrapy_webdriver import ScrapyWebdriver
+from selenium.webdriver.firefox.options import Options
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,7 @@ class Driver:
         proxies: tuple = (),
         install_adblock: bool = True,
         anticaptcha_api_key: str = None,
+        headless: bool = False,
     ):
         self.settings = {
             "change_proxies_on_each_request": change_proxy_on_each_request,
@@ -28,7 +30,10 @@ class Driver:
             "install_adblock": install_adblock,
             "anticaptcha_api_key": anticaptcha_api_key,
         }
-        self.web_driver = ScrapyWebdriver(**self.settings)
+        options = Options()
+        if headless:
+            options.headless = True
+        self.web_driver = ScrapyWebdriver(**self.settings, options=options)
         self.urls_count = 0
         self._blocked = False
         self.pool = pool
@@ -61,6 +66,7 @@ class DriverPool:
         proxies=(),
         install_adblock=True,
         anticaptcha_api_key=None,
+        headless=False,
     ):
         self.size = size
         self.drivers = []
@@ -69,6 +75,7 @@ class DriverPool:
         self.proxies = proxies
         self.install_adblock = install_adblock
         self.anticaptcha_api_key = anticaptcha_api_key
+        self.headless = headless
 
     def append_driver(self):
         driver = Driver(
@@ -77,6 +84,7 @@ class DriverPool:
             proxies=self.proxies,
             install_adblock=self.install_adblock,
             anticaptcha_api_key=self.anticaptcha_api_key,
+            headless=headless,
         )
         self.drivers.append(driver)
         return driver
