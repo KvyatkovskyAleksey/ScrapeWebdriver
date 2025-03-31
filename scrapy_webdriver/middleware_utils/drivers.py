@@ -84,7 +84,7 @@ class DriverPool:
             proxies=self.proxies,
             install_adblock=self.install_adblock,
             anticaptcha_api_key=self.anticaptcha_api_key,
-            headless=headless,
+            headless=self.headless,
         )
         self.drivers.append(driver)
         return driver
