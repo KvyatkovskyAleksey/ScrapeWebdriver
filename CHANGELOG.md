@@ -30,3 +30,6 @@ v1.0.8
 
 v1.0.9
 - fix typing error
+
+v1.0.10
+- refactor proxy handling
