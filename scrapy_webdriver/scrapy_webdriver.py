@@ -24,9 +24,9 @@ class ChangeProxyMixin:
     ):
         self.path = os.path.dirname(os.path.realpath(__file__))
         self.change_proxies_on_each_request = change_proxies_on_each_request
-        self.proxies = proxies
-        if self.proxies:
-            self.proxies = cycle(self.proxies)
+        self.proxies_list = proxies
+        if self.proxies_list:
+            self.proxies = cycle(self.proxies_list)
         super().__init__(*args, **kwargs)
         self.execute(Command.GET, {"url": "about:config"})
         # need for install extensions
@@ -40,8 +40,8 @@ class ChangeProxyMixin:
             self.install_addon(
                 f"{self.path}/extensions/anticaptcha-plugin.xpi", temporary=True
             )
-        if self.proxies:
-            proxy = self.proxies.__next__()
+        if self.proxies_list:
+            proxy = next(self.proxies)
             self.change_proxy(proxy)
 
     def soup(self):
@@ -129,10 +129,10 @@ class ChangeProxyMixin:
         """Loads a web page in the current browser session."""
         if (
             self.change_proxies_on_each_request
-            and self.proxies
+            and self.proxies_list
             and url != "about:config"
         ):
-            proxy = self.proxies.__next__()
+            proxy = next(self.proxies)
             self.change_proxy(proxy)
         self.execute(Command.GET, {"url": url})
 
